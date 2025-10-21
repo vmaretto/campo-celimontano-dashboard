@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Pianificazione Campo Celimontano</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 { font-size: 32px; margin-bottom: 8px; }
+        .header p { font-size: 16px; opacity: 0.9; }
+        
+        .tabs {
+            background: white;
+            display: flex;
+            border-bottom: 2px solid #e0e0e0;
+            padding: 0 30px;
+        }
+        
+        .tab {
+            padding: 15px 30px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            font-weight: 600;
+            color: #666;
+            transition: all 0.3s;
+        }
+        
+        .tab:hover { color: #667eea; background: #f8f9fa; }
+        .tab.active { color: #667eea; border-bottom-color: #667eea; }
+        
+        .container { max-width: 1600px; margin: 0 auto; padding: 30px; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .card-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary { background: #667eea; color: white; }
+        .btn-primary:hover { background: #5568d3; }
+        .btn-secondary { background: #e0e0e0; color: #333; }
+        .btn-danger { background: #ef4444; color: white; }
+        .btn-small { padding: 6px 12px; font-size: 12px; }
+        
+        /* Gantt Chart */
+        .gantt-wrapper { overflow-x: auto; margin-top: 20px; }
+        .gantt-grid { display: grid; grid-template-columns: 250px 1fr; min-width: 1000px; }
+        .gantt-header { display: contents; }
+        .gantt-cell {
+            padding: 15px;
+            border: 1px solid #e0e0e0;
+            background: #f8f9fa;
+            font-weight: 600;
+        }
+        .gantt-timeline-header {
+            display: flex;
+            background: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-left: none;
+        }
+        .gantt-week { flex: 1; padding: 10px 5px; text-align: center; font-size: 12px; font-weight: 600; border-right: 1px solid #e0e0e0; }
+        .gantt-row { display: contents; }
+        .gantt-label {
+            padding: 15px;
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-top: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .gantt-timeline {
+            display: flex;
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-left: none;
+            border-top: none;
+            position: relative;
+        }
+        .gantt-week-cell { flex: 1; border-right: 1px solid #e0e0e0; }
+        .gantt-bar {
+            position: absolute;
+            height: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        /* Phase Cards */
+        .phase-card {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .phase-card:hover { border-color: #667eea; box-shadow: 0 4px 12px rgba(102, 126, 234, 0.1); }
+        .phase-card.expanded { border-color: #667eea; }
+        
+        .phase-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .phase-icon { font-size: 32px; }
+        .phase-info { flex: 1; }
+        .phase-title { font-size: 18px; font-weight: 700; margin-bottom: 5px; }
+        .phase-meta { display: flex; gap: 20px; font-size: 14px; color: #666; flex-wrap: wrap; }
+        .phase-toggle { font-size: 24px; color: #667eea; }
+        
+        .phase-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+        .summary-label { font-size: 11px; font-weight: 600; color: #666; text-transform: uppercase; }
+        .summary-value { font-size: 14px; font-weight: 600; color: #333; margin-top: 5px; }
+        
+        .phase-details { margin-top: 25px; padding-top: 25px; border-top: 2px solid #f0f0f0; display: none; }
+        .phase-details.visible { display: block; }
+        
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .detail-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #666;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+        .detail-input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+        .detail-input:focus { outline: none; border-color: #667eea; }
+        textarea.detail-input { resize: vertical; min-height: 80px; }
+        
+        .task-item {
+            background: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 10px;
+        }
+        .task-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 10px; }
+        .task-name { font-weight: 600; }
+        .task-actions { display: flex; gap: 10px; }
+        
+        /* Budget */
+        .budget-totals {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .budget-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .budget-card.secondary { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
+        .budget-card.tertiary { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
+        .budget-label { font-size: 14px; opacity: 0.9; margin-bottom: 10px; }
+        .budget-value { font-size: 32px; font-weight: 700; }
+        
+        .budget-phase {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .budget-phase-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .budget-phase-header:hover { background: #e9ecef; }
+        .budget-phase-title { font-size: 18px; font-weight: 700; }
+        .budget-phase-total { font-size: 16px; font-weight: 700; color: #667eea; }
+        .budget-phase-details { display: none; padding-top: 20px; }
+        .budget-phase-details.visible { display: block; }
+        
+        .budget-items {
+            display: grid;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .budget-item {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 15px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        .budget-input {
+            width: 100%;
+            padding: 8px;
+            border: 2px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; }
+        .modal.active { display: flex; }
+        .modal-content { background: white; border-radius: 12px; padding: 30px; max-width: 600px; width: 90%; max-height: 90vh; overflow-y: auto; }
+        .modal-header { font-size: 24px; font-weight: 700; margin-bottom: 20px; }
+        .modal-footer { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+        
+        .stats { display: flex; gap: 30px; }
+        .stat { text-align: center; }
+        .stat-value { font-size: 28px; font-weight: 700; color: #667eea; }
+        .stat-label { font-size: 12px; color: #666; text-transform: uppercase; }
+        
+        @media (max-width: 768px) {
+            .container { padding: 15px; }
+            .detail-grid, .budget-item { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🌿 Campo Celimontano - Dashboard Pianificazione</h1>
+        <p>Strumento di pianificazione e simulazione budget</p>
+    </div>
+
+    <div class="tabs">
+        <div class="tab active" onclick="switchTab('planning')">📋 Pianificazione Fasi</div>
+        <div class="tab" onclick="switchTab('budget')">💰 Budget</div>
+    </div>
+
+    <div class="container">
+        <!-- PLANNING TAB -->
+        <div id="planning-tab" class="tab-content active">
+            <!-- Gantt Chart -->
+            <div class="card">
+                <div class="card-title">
+                    <span>📊 Diagramma di Gantt</span>
+                    <button class="btn btn-primary" onclick="regenerateGantt()">🔄 Rigenera Gantt</button>
+                </div>
+                <div id="ganttChart"></div>
+            </div>
+
+            <!-- Phases -->
+            <div class="card">
+                <div class="card-title">
+                    <span>Piano Operativo - 5 Fasi</span>
+                    <div class="stats">
+                        <div class="stat">
+                            <div class="stat-value" id="totalWeeks">11</div>
+                            <div class="stat-label">Settimane Totali</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">5</div>
+                            <div class="stat-label">Fasi</div>
+                        </div>
+                    </div>
+                </div>
+                <div id="phasesContainer"></div>
+            </div>
+        </div>
+
+        <!-- BUDGET TAB -->
+        <div id="budget-tab" class="tab-content">
+            <div class="card">
+                <h2 class="card-title">Budget Progetto</h2>
+                
+                <div class="budget-totals">
+                    <div class="budget-card">
+                        <div class="budget-label">Budget Totale Minimo</div>
+                        <div class="budget-value" id="budgetMin">€ 228.000</div>
+                    </div>
+                    <div class="budget-card secondary">
+                        <div class="budget-label">Budget Totale Massimo</div>
+                        <div class="budget-value" id="budgetMax">€ 380.000</div>
+                    </div>
+                    <div class="budget-card tertiary">
+                        <div class="budget-label">Con Contingenza (+5%)</div>
+                        <div class="budget-value" id="budgetContingency">€ 437.000</div>
+                    </div>
+                </div>
+                
+                <div id="budgetContainer"></div>
+                
+                <div style="background: #fef3c7; border-left: 4px solid #f59e0b; padding: 20px; border-radius: 6px; margin-top: 30px;">
+                    <div style="font-weight: 700; color: #92400e; margin-bottom: 10px;">📝 Note Operative</div>
+                    <div style="font-size: 14px; color: #78350f; line-height: 1.6;">
+                        <strong>Perimetro:</strong> Stima riferita alla metà inferiore (~0,5 ha). Metà superiore fuori perimetro.<br>
+                        <strong>Coordinamento:</strong> Prevedere interfaccia cantiere con separazione.<br>
+                        <strong>Contingenza:</strong> Buffer 10-15% per imprevisti raccomandato.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="taskModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header" id="modalTitle">Task</div>
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; font-weight: 600; margin-bottom: 5px;">Nome</label>
+                <input type="text" class="detail-input" id="taskName">
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; font-weight: 600; margin-bottom: 5px;">Owner</label>
+                <input type="text" class="detail-input" id="taskOwner">
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; font-weight: 600; margin-bottom: 5px;">Durata (giorni)</label>
+                <input type="number" class="detail-input" id="taskDuration">
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal()">Annulla</button>
+                <button class="btn btn-primary" onclick="saveTask()">Salva</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const phases = [
+            {
+                id: 1, icon: "📋", name: "Verifiche preliminari, rilievi e autorizzazioni",
+                description: "Conoscenza approfondita dello stato attuale del Campo Celimontano",
+                detailedDescription: "Il primo passo consiste nella conoscenza approfondita dello stato attuale del Campo Celimontano, sia dal punto di vista fisico che amministrativo. In questa fase si procederà a un rilievo topografico e fotografico completo, comprendente le due serre, i tre manufatti minori, le aree verdi e gli accessi. Parallelamente sarà effettuata un'analisi dei vincoli urbanistici e paesaggistici, con particolare attenzione alle norme di tutela che riguardano il verde pubblico e le aree di pregio storico ambientale del Celio. Un censimento della vegetazione, con particolare riferimento agli alberi di alto fusto e al loro stato fitosanitario, consentirà di individuare le zone da preservare e quelle in cui sarà possibile intervenire con attività di pulizia o riqualificazione. Saranno inoltre verificate le condizioni del suolo, le reti elettriche e idriche esistenti, e saranno avviate le procedure per ottenere le autorizzazioni necessarie agli interventi di sistemazione e installazione delle strutture temporanee previste dal progetto. Questa fase consentirà di definire con precisione le aree operative, i vincoli di intervento e le prime priorità tecniche e paesaggistiche.",
+                settimanaInizio: 1, settimanaFine: 4, durataSettimane: 4,
+                owner: "Team Tecnico & Amministrativo",
+                dipendenze: "Nessuna (avvio immediato)", color: "#3b82f6",
+                tasks: [
+                    { id: 1, name: "Rilievo topografico e fotografico dettagliato dell'area (serre, manufatti, vegetazione, infrastrutture)", owner: "Geometra", duration: 14 },
+                    { id: 2, name: "Verifica dei vincoli urbanistici, paesaggistici e ambientali con Sovrintendenza e Demanio", owner: "Urbanista", duration: 21 },
+                    { id: 3, name: "Rilevamento della vegetazione (censimento alberi, stato fitosanitario, mappatura radici)", owner: "Agronomo", duration: 14 },
+                    { id: 4, name: "Analisi delle condizioni del suolo e dei sistemi di drenaggio", owner: "Geologo", duration: 10 },
+                    { id: 5, name: "Verifica della rete elettrica, idrica e delle infrastrutture esistenti", owner: "Impiantista", duration: 7 },
+                    { id: 6, name: "Richiesta e ottenimento dei permessi e delle autorizzazioni per lavori temporanei e allestimenti modulari", owner: "Ufficio Amministrativo", duration: 28 },
+                    { id: 7, name: "Definizione del protocollo di sicurezza e accesso all'area", owner: "Responsabile Sicurezza", duration: 7 }
+                ]
+            },
+            {
+                id: 2, icon: "🧹", name: "Pulizia e messa in sicurezza",
+                description: "Rimozione materiali e preparazione area operativa",
+                detailedDescription: "Una volta completati i rilievi e le verifiche, sarà possibile avviare la fase di pulizia e messa in sicurezza del campo. Si procederà alla rimozione di materiali abbandonati, rifiuti vegetali e residui di lavorazioni precedenti, restituendo all'area un aspetto ordinato e leggibile. La pulizia del sottobosco verrà eseguita in modo selettivo, mantenendo l'integrità ecologica e paesaggistica del sito. Gli interventi includeranno la potatura delle alberature pericolanti, il consolidamento dei pendii, la verifica dei drenaggi e la realizzazione di recinzioni provvisorie per delimitare le zone operative. In questa fase saranno predisposti anche i percorsi di accesso ai mezzi tecnici, i punti di sicurezza e la segnaletica temporanea, in modo da garantire un cantiere sostenibile e sicuro. L'obiettivo finale è restituire un'area pulita, stabile e pronta ad accogliere i successivi lavori di riqualificazione e allestimento.",
+                settimanaInizio: 2, settimanaFine: 4, durataSettimane: 3,
+                owner: "Squadra Manutenzione",
+                dipendenze: "Parziale parallelizzazione con Fase 1", color: "#10b981",
+                tasks: [
+                    { id: 1, name: "Pulizia generale dell'area: rimozione di materiali abbandonati, rifiuti vegetali e strutture deteriorate", owner: "Ditta Pulizie", duration: 10 },
+                    { id: 2, name: "Potatura selettiva e messa in sicurezza delle alberature pericolanti", owner: "Tree Climber", duration: 7 },
+                    { id: 3, name: "Consolidamento dei pendii e verifica del drenaggio", owner: "Tecnico Geologo", duration: 5 },
+                    { id: 4, name: "Realizzazione di recinzioni provvisorie per delimitare zone operative", owner: "Squadra Cantiere", duration: 3 },
+                    { id: 5, name: "Ripristino dei percorsi di accesso e delle aree di lavoro", owner: "Operai", duration: 5 },
+                    { id: 6, name: "Installazione di segnaletica temporanea di cantiere e punti di sicurezza", owner: "Responsabile Sicurezza", duration: 2 }
+                ]
+            },
+            {
+                id: 3, icon: "🏗️", name: "Riqualificazione strutture esistenti",
+                description: "Recupero e valorizzazione serre e manufatti",
+                detailedDescription: "Il cuore del progetto passa attraverso il recupero e la valorizzazione delle strutture già presenti. Le due serre, di dimensioni differenti, rappresentano elementi chiave per le future funzioni del campo. La serra grande sarà destinata alle attività di ricerca e innovazione, mentre la serra piccola potrà ospitare funzioni dimostrative, divulgative e didattiche. Durante questa fase verranno eseguite ispezioni strutturali per verificare lo stato dei telai, delle coperture e dei pavimenti, seguite dal ripristino dei materiali danneggiati e dalla sostituzione di quelli non più idonei. I tre manufatti minori, distribuiti lungo il perimetro del campo, saranno riqualificati per ospitare piccoli spazi di supporto come laboratori, uffici o installazioni multimediali. Tutti gli edifici verranno dotati di impianti elettrici e idrici a norma, sistemi di ventilazione naturale e un'illuminazione adeguata, garantendo funzionalità, sicurezza e sostenibilità energetica.",
+                settimanaInizio: 4, settimanaFine: 9, durataSettimane: 6,
+                owner: "Impresa Edile",
+                dipendenze: "Completamento pulizia iniziale (Fase 2)", color: "#f59e0b",
+                tasks: [
+                    { id: 1, name: "Ispezione strutturale delle serre (telaio, vetri, copertura, pavimentazione)", owner: "Ingegnere Strutturista", duration: 5 },
+                    { id: 2, name: "Ripristino delle parti danneggiate e sostituzione materiali deteriorati", owner: "Muratori", duration: 28 },
+                    { id: 3, name: "Pulizia interna e trattamento anti-umidità", owner: "Impresa Edile", duration: 7 },
+                    { id: 4, name: "Revisione impianti (elettrico, idrico, illuminazione)", owner: "Impiantisti", duration: 21 },
+                    { id: 5, name: "Riqualificazione del manufatto (intonaco, pavimenti, serramenti)", owner: "Impresa Edile", duration: 28 },
+                    { id: 6, name: "Predisposizione di sistemi di ventilazione e illuminazione naturale", owner: "Tecnico Impianti", duration: 10 }
+                ]
+            },
+            {
+                id: 4, icon: "🌳", name: "Sistemazione del verde e del suolo",
+                description: "Cura e valorizzazione del patrimonio naturale",
+                detailedDescription: "Il paesaggio è l'anima del Campo Celimontano. In questa fase il lavoro si concentrerà sulla cura e valorizzazione del patrimonio naturale, preservando il carattere spontaneo dell'area ma migliorandone la fruibilità. Saranno rimossi i rovi e la vegetazione infestante, conservando invece gli alberi maturi e le specie autoctone. Le radure saranno liberate e adattate per accogliere in futuro installazioni leggere, spazi didattici o piccoli eventi. Si prevede inoltre la realizzazione di percorsi pedonali naturali, in stabilizzato o legno, che collegheranno le diverse zone del campo, con l'inserimento di una illuminazione discreta e a basso impatto visivo. Un'attenzione particolare sarà rivolta alla Fontana delle Ninfee, la cui area verrà ripulita e valorizzata come elemento scenografico e punto di aggregazione. Infine, saranno effettuate nuove piantumazioni di piante mellifere e arbusti autoctoni, con l'obiettivo di aumentare la biodiversità e migliorare il microclima dell'area.",
+                settimanaInizio: 3, settimanaFine: 7, durataSettimane: 5,
+                owner: "Team Paesaggistico",
+                dipendenze: "Squadre distinte in parallelo con Fase 2", color: "#22c55e",
+                tasks: [
+                    { id: 1, name: "Taglio selettivo e pulizia del sottobosco nelle aree accessibili al pubblico", owner: "Giardinieri", duration: 14 },
+                    { id: 2, name: "Conservazione e protezione delle alberature principali", owner: "Arboricoltore", duration: 7 },
+                    { id: 3, name: "Realizzazione di percorsi naturali pedonali (stabilizzato o legno)", owner: "Muratori Specializzati", duration: 21 },
+                    { id: 4, name: "Installazione di illuminazione soffusa e a basso impatto", owner: "Elettricista", duration: 10 },
+                    { id: 5, name: "Creazione di piccole radure per eventi, lezioni all'aperto e laboratori", owner: "Paesaggista", duration: 14 },
+                    { id: 6, name: "Integrazione paesaggistica della Fontana delle Ninfee (ripristino area circostante)", owner: "Restauratore", duration: 10 },
+                    { id: 7, name: "Piantumazioni integrative di specie autoctone e mellifere", owner: "Vivaista", duration: 7 }
+                ]
+            },
+            {
+                id: 5, icon: "⚡", name: "Predisposizione infrastrutturale",
+                description: "Installazione infrastrutture tecnologiche di base",
+                detailedDescription: "Una volta completati gli interventi di sistemazione, si passerà alla fase di installazione delle infrastrutture di base che renderanno il campo operativo e pronto per accogliere funzioni tecnologiche, didattiche e divulgative. Saranno posate le linee elettriche e idriche principali, prevedendo anche soluzioni flessibili e temporanee per gli eventi e gli allestimenti mobili. Verrà implementata la rete wi-fi e dati, indispensabile per le applicazioni digitali, i totem informativi, i sensori del living lab e le future connessioni con i sistemi di monitoraggio del CREA. Si provvederà inoltre all'installazione di punti luce, prese e sistemi di alimentazione distribuiti, in modo da rendere ogni area autonoma e versatile. La fase comprenderà anche la definizione delle aree destinate a container modulari, pedane e piccole strutture mobili, con la predisposizione di superfici piane e accessi tecnici. L'obiettivo è dotare il Campo Celimontano di una base infrastrutturale moderna e sostenibile, capace di sostenere nel tempo le attività di ricerca, formazione e divulgazione previste.",
+                settimanaInizio: 8, settimanaFine: 11, durataSettimane: 4,
+                owner: "Team Impiantistico",
+                dipendenze: "Completamento parziale Fase 3 (serre)", color: "#8b5cf6",
+                tasks: [
+                    { id: 1, name: "Posa di linee elettriche e idriche di servizio (anche temporanee)", owner: "Impiantisti", duration: 14 },
+                    { id: 2, name: "Installazione di wi-fi e rete dati per i dispositivi digitali e sensori", owner: "Tecnico IT", duration: 10 },
+                    { id: 3, name: "Allestimento di punti luce e prese per eventi e laboratori", owner: "Elettricista", duration: 10 },
+                    { id: 4, name: "Realizzazione di passerelle accessibili e pavimentazioni leggere", owner: "Muratori", duration: 14 },
+                    { id: 5, name: "Definizione delle aree per container modulari e strutture mobili", owner: "Geometra", duration: 7 }
+                ]
+            }
+        ];
+
+        const budgetData = [
+            {
+                fase: "Fase 1", 
+                faseId: 1,
+                faseNome: "Verifiche preliminari, rilievi e autorizzazioni",
+                descrizione: "Questa prima fase si concentra sulla conoscenza approfondita del Campo Celimontano attraverso rilievi topografici e fotografici dettagliati che mappano serre, manufatti e vegetazione. Parallelamente vengono condotte verifiche sui vincoli urbanistici e paesaggistici in coordinamento con Sovrintendenza e Demanio, mentre il censimento della vegetazione identifica le alberature da preservare. L'analisi del suolo e dei sistemi di drenaggio, insieme alla verifica delle reti esistenti, permettono di definire gli interventi necessari. Infine, vengono avviate le pratiche autorizzative e definiti i protocolli di sicurezza per l'accesso all'area.",
+                items: [
+                    { desc: "Rilievo topografico e fotografico dettagliato dell'area", min: 5000, max: 7000 },
+                    { desc: "Verifica vincoli urbanistici e paesaggistici con enti", min: 4000, max: 5600 },
+                    { desc: "Censimento vegetazione e analisi fitosanitaria", min: 3500, max: 4900 },
+                    { desc: "Analisi condizioni suolo e sistemi drenaggio", min: 2800, max: 3900 },
+                    { desc: "Verifica reti elettrica, idrica e infrastrutture", min: 2500, max: 3500 },
+                    { desc: "Pratiche autorizzative e permessi", min: 5000, max: 7000 },
+                    { desc: "Protocollo sicurezza e accesso area", min: 2000, max: 2800 }
+                ]
+            },
+            {
+                fase: "Fase 2", 
+                faseId: 2,
+                faseNome: "Pulizia e messa in sicurezza",
+                descrizione: "Una volta completate le verifiche preliminari, si avvia la pulizia completa dell'area con rimozione di materiali abbandonati e rifiuti vegetali che si sono accumulati nel tempo. La potatura selettiva delle alberature pericolanti viene eseguita mantenendo l'integrità ecologica del sito, mentre il consolidamento dei pendii e la verifica dei drenaggi garantiscono la stabilità dell'area. Vengono quindi realizzate recinzioni provvisorie per delimitare le zone operative e ripristinati i percorsi di accesso, completando con l'installazione della segnaletica di cantiere necessaria per garantire un ambiente di lavoro sicuro.",
+                items: [
+                    { desc: "Pulizia generale e rimozione materiali abbandonati", min: 7000, max: 9800 },
+                    { desc: "Potatura selettiva e messa in sicurezza alberature", min: 6000, max: 8400 },
+                    { desc: "Consolidamento pendii e verifica drenaggio", min: 4500, max: 6300 },
+                    { desc: "Recinzioni provvisorie per delimitazione zone", min: 3200, max: 4500 },
+                    { desc: "Ripristino percorsi di accesso e aree lavoro", min: 4000, max: 5600 },
+                    { desc: "Segnaletica temporanea e punti sicurezza", min: 2000, max: 2800 }
+                ]
+            },
+            {
+                fase: "Fase 3", 
+                faseId: 3,
+                faseNome: "Riqualificazione strutture esistenti",
+                descrizione: "Il cuore del progetto riguarda il recupero delle strutture esistenti, a partire dalle due serre che rappresentano elementi chiave per le future attività. Dopo le ispezioni strutturali su telai, vetri e coperture, si procede con il ripristino delle parti danneggiate sostituendo i materiali deteriorati. La pulizia interna e il trattamento anti-umidità preparano gli ambienti per la revisione completa degli impianti elettrici, idrici e di illuminazione. I manufatti minori vengono riqualificati con interventi su intonaci, pavimenti e serramenti, mentre vengono predisposti sistemi di ventilazione e illuminazione naturale per garantire comfort e sostenibilità energetica.",
+                items: [
+                    { desc: "Ispezione strutturale serre (telaio, vetri, coperture)", min: 6500, max: 9100 },
+                    { desc: "Ripristino parti danneggiate e sostituzione materiali", min: 32000, max: 44800 },
+                    { desc: "Pulizia interna e trattamento anti-umidità", min: 5000, max: 7000 },
+                    { desc: "Revisione impianti elettrico, idrico, illuminazione", min: 18000, max: 25200 },
+                    { desc: "Riqualificazione manufatto (intonaco, pavimenti, serramenti)", min: 20000, max: 28000 },
+                    { desc: "Sistemi ventilazione e illuminazione naturale", min: 7500, max: 10500 }
+                ]
+            },
+            {
+                fase: "Fase 4", 
+                faseId: 4,
+                faseNome: "Sistemazione del verde e del suolo",
+                descrizione: "La valorizzazione del paesaggio naturale avviene preservando il carattere spontaneo dell'area ma migliorandone la fruibilità. Il taglio selettivo del sottobosco nelle zone pubbliche viene bilanciato dalla conservazione e protezione delle alberature principali che caratterizzano il sito. Vengono realizzati percorsi pedonali naturali in stabilizzato o legno che collegano le diverse aree, dotati di illuminazione soffusa a basso impatto. Piccole radure vengono create per ospitare eventi, lezioni all'aperto e laboratori, mentre particolare attenzione viene dedicata alla valorizzazione della Fontana delle Ninfee. Infine, le piantumazioni di specie autoctone e mellifere arricchiscono la biodiversità e migliorano il microclima.",
+                items: [
+                    { desc: "Taglio selettivo e pulizia sottobosco aree pubbliche", min: 7500, max: 10500 },
+                    { desc: "Conservazione e protezione alberature principali", min: 5000, max: 7000 },
+                    { desc: "Percorsi pedonali naturali (stabilizzato o legno)", min: 11000, max: 15400 },
+                    { desc: "Illuminazione soffusa a basso impatto", min: 5800, max: 8100 },
+                    { desc: "Radure per eventi, lezioni all'aperto e laboratori", min: 6500, max: 9100 },
+                    { desc: "Valorizzazione Fontana delle Ninfee", min: 5500, max: 7700 },
+                    { desc: "Piantumazioni specie autoctone e mellifere", min: 4200, max: 5900 }
+                ]
+            },
+            {
+                fase: "Fase 5", 
+                faseId: 5,
+                faseNome: "Predisposizione infrastrutturale",
+                descrizione: "L'ultima fase rende operativo il campo attraverso l'installazione delle infrastrutture tecnologiche di base. Vengono posate linee elettriche e idriche di servizio, prevedendo anche soluzioni temporanee flessibili per eventi e allestimenti mobili. La rete wi-fi e dati viene implementata per supportare dispositivi digitali, sensori del living lab e sistemi di monitoraggio. Punti luce e prese elettriche vengono distribuiti strategicamente per eventi e laboratori, mentre passerelle accessibili e pavimentazioni leggere migliorano la fruibilità. Infine vengono definite le aree destinate ai container modulari e alle strutture mobili, con predisposizione di superfici piane e accessi tecnici.",
+                items: [
+                    { desc: "Linee elettriche e idriche di servizio (anche temporanee)", min: 15000, max: 21000 },
+                    { desc: "Rete wi-fi e dati per dispositivi digitali e sensori", min: 9000, max: 12600 },
+                    { desc: "Punti luce e prese per eventi e laboratori", min: 7500, max: 10500 },
+                    { desc: "Passerelle accessibili e pavimentazioni leggere", min: 8500, max: 11900 },
+                    { desc: "Aree per container modulari e strutture mobili", min: 5000, max: 7000 }
+                ]
+            }
+        ];
+
+        let currentPhaseId = null;
+        let currentTaskId = null;
+
+        function renderGantt() {
+            const totalWeeks = Math.max(...phases.map(p => p.settimanaFine));
+            document.getElementById('totalWeeks').textContent = totalWeeks;
+            
+            let html = '<div class="gantt-wrapper"><div class="gantt-grid">';
+            html += '<div class="gantt-header"><div class="gantt-cell">Fase</div><div class="gantt-timeline-header">';
+            for (let i = 1; i <= totalWeeks; i++) html += `<div class="gantt-week">S${i}</div>`;
+            html += '</div></div>';
+            
+            phases.forEach(p => {
+                html += '<div class="gantt-row"><div class="gantt-label" style="padding:20px 15px;"><span style="font-size:20px;margin-right:10px;">' + p.icon + '</span><span style="font-weight:600;font-size:14px;line-height:1.4;">Fase ' + p.id + ' - ' + p.name + '</span></div>';
+                html += '<div class="gantt-timeline">';
+                for (let i = 1; i <= totalWeeks; i++) html += '<div class="gantt-week-cell"></div>';
+                const left = ((p.settimanaInizio - 1) / totalWeeks) * 100;
+                const width = ((p.settimanaFine - p.settimanaInizio + 1) / totalWeeks) * 100;
+                html += '<div class="gantt-bar" style="left:' + left + '%;width:' + width + '%;background:' + p.color + ';">' + p.durataSettimane + 'w</div>';
+                html += '</div></div>';
+            });
+            
+            // Add milestones row
+            html += '<div style="grid-column: 1 / -1; margin-top: 15px; padding: 15px; background: #f8f9fa; border-radius: 8px;"><strong>🎯 Milestone Principali:</strong><br>';
+            html += '<div style="margin-top:10px;display:flex;gap:20px;flex-wrap:wrap;">';
+            html += '<span style="padding:5px 10px;background:#dbeafe;border-radius:4px;font-size:13px;">✓ Fine Verifiche (S4)</span>';
+            html += '<span style="padding:5px 10px;background:#d1fae5;border-radius:4px;font-size:13px;">✓ Area Sicura (S4)</span>';
+            html += '<span style="padding:5px 10px;background:#fef3c7;border-radius:4px;font-size:13px;">✓ Serre Operative (S9)</span>';
+            html += '<span style="padding:5px 10px;background:#e9d5ff;border-radius:4px;font-size:13px;">✓ Campo Attivo (S11)</span>';
+            html += '</div></div>';
+            
+            html += '</div></div>';
+            document.getElementById('ganttChart').innerHTML = html;
+        }
+
+        function renderPhases() {
+            let html = '';
+            phases.forEach(p => {
+                html += '<div class="phase-card" id="card-' + p.id + '">';
+                html += '<div class="phase-header" onclick="togglePhase(' + p.id + ')">';
+                html += '<div class="phase-icon">' + p.icon + '</div>';
+                html += '<div class="phase-info"><div class="phase-title">Fase ' + p.id + ': ' + p.name + '</div>';
+                html += '<div class="phase-meta"><span>📅 Sett. ' + p.settimanaInizio + '-' + p.settimanaFine + '</span>';
+                html += '<span>⏱️ ' + p.durataSettimane + ' sett.</span><span>👤 ' + p.owner + '</span></div></div>';
+                html += '<div class="phase-toggle" id="toggle-' + p.id + '">▼</div></div>';
+                
+                html += '<div class="phase-summary" id="summary-' + p.id + '">';
+                html += '<div><div class="summary-label">Tasks</div><div class="summary-value">' + p.tasks.length + '</div></div>';
+                html += '<div><div class="summary-label">Dipendenze</div><div class="summary-value">' + p.dipendenze + '</div></div>';
+                html += '</div>';
+                
+                html += '<div class="phase-details" id="details-' + p.id + '">';
+                
+                // Format detailed description with paragraphs and bold
+                const formattedDesc = formatDetailedDescription(p.detailedDescription);
+                html += '<div style="background:#f8f9fa;padding:20px;border-radius:8px;margin-bottom:20px;">';
+                html += '<div style="font-size:16px;font-weight:700;color:#333;margin-bottom:15px;">📄 Descrizione Dettagliata</div>';
+                html += '<div style="line-height:1.8;color:#555;">' + formattedDesc + '</div></div>';
+                
+                html += '<div class="detail-grid">';
+                html += '<div><div class="detail-label">Settimana Inizio</div><input type="number" class="detail-input" value="' + p.settimanaInizio + '" onchange="updatePhase(' + p.id + ',\'settimanaInizio\',this.value)"></div>';
+                html += '<div><div class="detail-label">Settimana Fine</div><input type="number" class="detail-input" value="' + p.settimanaFine + '" onchange="updatePhase(' + p.id + ',\'settimanaFine\',this.value)"></div>';
+                html += '<div><div class="detail-label">Durata Settimane</div><input type="number" class="detail-input" value="' + p.durataSettimane + '" onchange="updatePhase(' + p.id + ',\'durataSettimane\',this.value)"></div>';
+                html += '<div><div class="detail-label">Owner</div><input class="detail-input" value="' + p.owner + '" onchange="updatePhase(' + p.id + ',\'owner\',this.value)"></div>';
+                html += '<div><div class="detail-label">Dipendenze</div><input class="detail-input" value="' + p.dipendenze + '" onchange="updatePhase(' + p.id + ',\'dipendenze\',this.value)"></div>';
+                html += '</div>';
+                
+                html += '<div style="margin-top:25px;"><strong>📋 Task (' + p.tasks.length + ')</strong> <button class="btn btn-primary btn-small" onclick="openModal(' + p.id + ')">+ Aggiungi</button></div>';
+                html += '<div id="tasks-' + p.id + '" style="margin-top:15px;">';
+                p.tasks.forEach(t => {
+                    html += '<div class="task-item"><div class="task-header"><div class="task-name">' + t.name + '</div>';
+                    html += '<div class="task-actions"><button class="btn btn-secondary btn-small" onclick="editTask(' + p.id + ',' + t.id + ')">✏️</button>';
+                    html += '<button class="btn btn-danger btn-small" onclick="deleteTask(' + p.id + ',' + t.id + ')">🗑️</button></div></div>';
+                    html += '<div style="font-size:13px;color:#666;">👤 ' + t.owner + ' • ⏱️ ' + t.duration + ' gg</div></div>';
+                });
+                html += '</div></div></div>';
+            });
+            document.getElementById('phasesContainer').innerHTML = html;
+        }
+
+        function formatDetailedDescription(text) {
+            // Split into sentences and format
+            const sentences = text.split('. ');
+            let formatted = '';
+            sentences.forEach((sentence, idx) => {
+                if (sentence.trim()) {
+                    // Add period back if not last sentence
+                    const fullSentence = idx < sentences.length - 1 ? sentence + '.' : sentence;
+                    // Make first few words bold for emphasis
+                    if (idx === 0) {
+                        const words = fullSentence.split(' ');
+                        const firstPart = words.slice(0, 5).join(' ');
+                        const rest = words.slice(5).join(' ');
+                        formatted += '<p style="margin-bottom:12px;"><strong>' + firstPart + '</strong> ' + rest + '</p>';
+                    } else {
+                        formatted += '<p style="margin-bottom:12px;">' + fullSentence + '</p>';
+                    }
+                }
+            });
+            return formatted;
+        }
+
+        function renderBudget() {
+            let html = '';
+            budgetData.forEach((b, idx) => {
+                const totMin = b.items.reduce((s, i) => s + i.min, 0);
+                const totMax = b.items.reduce((s, i) => s + i.max, 0);
+                
+                html += '<div class="budget-phase"><div class="budget-phase-header" onclick="toggleBudget(' + b.faseId + ')">';
+                html += '<div class="budget-phase-title">' + b.fase + ' - ' + b.faseNome + '</div>';
+                html += '<div class="budget-phase-total">€ ' + totMin.toLocaleString('it-IT') + ' - € ' + totMax.toLocaleString('it-IT');
+                html += ' <span id="btoggle-' + b.faseId + '">▼</span></div></div>';
+                
+                html += '<div class="budget-phase-details" id="bdetails-' + b.faseId + '">';
+                html += '<div style="background:#f8f9fa;padding:15px;border-radius:8px;margin-bottom:15px;">';
+                html += '<strong>Descrizione Sintesi:</strong><br><textarea class="budget-input" rows="3" style="margin-top:8px;" onchange="updateBudgetDesc(' + idx + ',this.value)">' + b.descrizione + '</textarea></div>';
+                
+                html += '<div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:10px;padding:10px;font-weight:600;font-size:12px;color:#666;">';
+                html += '<div>VOCE DI SPESA (allineata ai task)</div><div>MIN (€)</div><div>MAX (€)</div></div>';
+                
+                html += '<div class="budget-items">';
+                b.items.forEach((item, i) => {
+                    html += '<div class="budget-item">';
+                    html += '<textarea class="budget-input" rows="2" onchange="updateBudgetItem(' + idx + ',' + i + ',\'desc\',this.value)">' + item.desc + '</textarea>';
+                    html += '<input type="number" class="budget-input" value="' + item.min + '" onchange="updateBudgetItem(' + idx + ',' + i + ',\'min\',this.value)">';
+                    html += '<input type="number" class="budget-input" value="' + item.max + '" onchange="updateBudgetItem(' + idx + ',' + i + ',\'max\',this.value)">';
+                    html += '</div>';
+                });
+                html += '</div>';
+                html += '<button class="btn btn-primary" style="margin-top:15px;" onclick="addBudgetItem(' + idx + ')">+ Aggiungi Voce</button>';
+                html += '</div></div>';
+            });
+            document.getElementById('budgetContainer').innerHTML = html;
+            updateBudgetTotals();
+        }
+
+        function updateBudgetTotals() {
+            let min = 0, max = 0;
+            budgetData.forEach(b => b.items.forEach(i => { min += i.min; max += i.max; }));
+            document.getElementById('budgetMin').textContent = '€ ' + min.toLocaleString('it-IT');
+            document.getElementById('budgetMax').textContent = '€ ' + max.toLocaleString('it-IT');
+            // Contingency 5% arrotondato
+            const contingency = Math.round(max * 1.05 / 100) * 100;
+            document.getElementById('budgetContingency').textContent = '€ ' + contingency.toLocaleString('it-IT');
+        }
+
+        function switchTab(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById(tab + '-tab').classList.add('active');
+        }
+
+        function togglePhase(id) {
+            const det = document.getElementById('details-' + id);
+            const sum = document.getElementById('summary-' + id);
+            const tog = document.getElementById('toggle-' + id);
+            const card = document.getElementById('card-' + id);
+            if (det.classList.contains('visible')) {
+                det.classList.remove('visible');
+                sum.style.display = 'grid';
+                tog.textContent = '▼';
+                card.classList.remove('expanded');
+            } else {
+                det.classList.add('visible');
+                sum.style.display = 'none';
+                tog.textContent = '▲';
+                card.classList.add('expanded');
+            }
+        }
+
+        function toggleBudget(id) {
+            const det = document.getElementById('bdetails-' + id);
+            const tog = document.getElementById('btoggle-' + id);
+            if (det.classList.contains('visible')) {
+                det.classList.remove('visible');
+                tog.textContent = '▼';
+            } else {
+                det.classList.add('visible');
+                tog.textContent = '▲';
+            }
+        }
+
+        function updatePhase(id, field, val) {
+            const p = phases.find(x => x.id === id);
+            p[field] = isNaN(val) ? val : parseInt(val);
+            renderPhases();
+            renderGantt();
+        }
+
+        function updateBudgetDesc(idx, val) {
+            budgetData[idx].descrizione = val;
+        }
+
+        function updateBudgetItem(idx, i, field, val) {
+            if (field === 'desc') budgetData[idx].items[i].desc = val;
+            else budgetData[idx].items[i][field] = parseInt(val);
+            updateBudgetTotals();
+        }
+
+        function addBudgetItem(idx) {
+            budgetData[idx].items.push({ desc: 'Nuova voce', min: 0, max: 0 });
+            renderBudget();
+        }
+
+        function regenerateGantt() {
+            renderGantt();
+            alert('Gantt rigenerato!');
+        }
+
+        function openModal(pid, tid) {
+            currentPhaseId = pid;
+            currentTaskId = tid || null;
+            const p = phases.find(x => x.id === pid);
+            if (tid) {
+                const t = p.tasks.find(x => x.id === tid);
+                document.getElementById('modalTitle').textContent = 'Modifica Task';
+                document.getElementById('taskName').value = t.name;
+                document.getElementById('taskOwner').value = t.owner;
+                document.getElementById('taskDuration').value = t.duration;
+            } else {
+                document.getElementById('modalTitle').textContent = 'Nuovo Task';
+                document.getElementById('taskName').value = '';
+                document.getElementById('taskOwner').value = '';
+                document.getElementById('taskDuration').value = '';
+            }
+            document.getElementById('taskModal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('taskModal').classList.remove('active');
+        }
+
+        function saveTask() {
+            const name = document.getElementById('taskName').value;
+            const owner = document.getElementById('taskOwner').value;
+            const duration = parseInt(document.getElementById('taskDuration').value);
+            if (!name || !owner || !duration) { alert('Compila tutti i campi'); return; }
+            
+            const p = phases.find(x => x.id === currentPhaseId);
+            if (currentTaskId) {
+                const t = p.tasks.find(x => x.id === currentTaskId);
+                t.name = name; t.owner = owner; t.duration = duration;
+            } else {
+                const newId = p.tasks.length ? Math.max(...p.tasks.map(x => x.id)) + 1 : 1;
+                p.tasks.push({ id: newId, name, owner, duration });
+            }
+            closeModal();
+            renderPhases();
+        }
+
+        function editTask(pid, tid) {
+            openModal(pid, tid);
+        }
+
+        function deleteTask(pid, tid) {
+            if (!confirm('Eliminare il task?')) return;
+            const p = phases.find(x => x.id === pid);
+            p.tasks = p.tasks.filter(t => t.id !== tid);
+            renderPhases();
+        }
+
+        // Initialize
+        renderGantt();
+        renderPhases();
+        renderBudget();
+    </script>
+</body>
+</html>

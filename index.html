@@ -245,6 +245,35 @@
         .budget-phase-details { display: none; padding-top: 20px; }
         .budget-phase-details.visible { display: block; }
         
+        /* Descrizione Budget - Nuovo Stile */
+        .budget-description-box {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 2px solid #e0e0e0;
+        }
+        
+        .budget-description-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .budget-description-title {
+            font-weight: 700;
+            font-size: 15px;
+            color: #333;
+        }
+        
+        .budget-description-text {
+            line-height: 1.8;
+            color: #555;
+            font-size: 14px;
+            text-align: justify;
+        }
+        
         .budget-items {
             display: grid;
             gap: 15px;
@@ -359,7 +388,7 @@
         </div>
     </div>
 
-    <!-- Modal -->
+    <!-- Modal Task -->
     <div id="taskModal" class="modal">
         <div class="modal-content">
             <div class="modal-header" id="modalTitle">Task</div>
@@ -378,6 +407,21 @@
             <div class="modal-footer">
                 <button class="btn btn-secondary" onclick="closeModal()">Annulla</button>
                 <button class="btn btn-primary" onclick="saveTask()">Salva</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Descrizione Budget -->
+    <div id="descriptionModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">Modifica Descrizione Fase</div>
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; font-weight: 600; margin-bottom: 5px;">Descrizione Sintesi</label>
+                <textarea class="detail-input" id="descriptionText" rows="8" style="min-height: 200px;"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeDescriptionModal()">Annulla</button>
+                <button class="btn btn-primary" onclick="saveDescription()">Salva</button>
             </div>
         </div>
     </div>
@@ -543,6 +587,7 @@
 
         let currentPhaseId = null;
         let currentTaskId = null;
+        let currentDescriptionIndex = null;
 
         function renderGantt() {
             const totalWeeks = Math.max(...phases.map(p => p.settimanaFine));
@@ -655,8 +700,15 @@
                 html += ' <span id="btoggle-' + b.faseId + '">▼</span></div></div>';
                 
                 html += '<div class="budget-phase-details" id="bdetails-' + b.faseId + '">';
-                html += '<div style="background:#f8f9fa;padding:15px;border-radius:8px;margin-bottom:15px;">';
-                html += '<strong>Descrizione Sintesi:</strong><br><textarea class="budget-input" rows="3" style="margin-top:8px;" onchange="updateBudgetDesc(' + idx + ',this.value)">' + b.descrizione + '</textarea></div>';
+                
+                // NUOVO: Descrizione come testo formattato con pulsante modifica
+                html += '<div class="budget-description-box">';
+                html += '<div class="budget-description-header">';
+                html += '<div class="budget-description-title">📄 Descrizione Sintesi della Fase</div>';
+                html += '<button class="btn btn-primary btn-small" onclick="openDescriptionModal(' + idx + ')">✏️ Modifica</button>';
+                html += '</div>';
+                html += '<div class="budget-description-text" id="desc-text-' + idx + '">' + b.descrizione + '</div>';
+                html += '</div>';
                 
                 html += '<div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:10px;padding:10px;font-weight:600;font-size:12px;color:#666;">';
                 html += '<div>VOCE DI SPESA (allineata ai task)</div><div>MIN (€)</div><div>MAX (€)</div></div>';
@@ -731,10 +783,6 @@
             renderGantt();
         }
 
-        function updateBudgetDesc(idx, val) {
-            budgetData[idx].descrizione = val;
-        }
-
         function updateBudgetItem(idx, i, field, val) {
             if (field === 'desc') budgetData[idx].items[i].desc = val;
             else budgetData[idx].items[i][field] = parseInt(val);
@@ -801,6 +849,33 @@
             const p = phases.find(x => x.id === pid);
             p.tasks = p.tasks.filter(t => t.id !== tid);
             renderPhases();
+        }
+
+        // NUOVE FUNZIONI PER GESTIRE LA DESCRIZIONE BUDGET
+        function openDescriptionModal(idx) {
+            currentDescriptionIndex = idx;
+            document.getElementById('descriptionText').value = budgetData[idx].descrizione;
+            document.getElementById('descriptionModal').classList.add('active');
+        }
+
+        function closeDescriptionModal() {
+            document.getElementById('descriptionModal').classList.remove('active');
+            currentDescriptionIndex = null;
+        }
+
+        function saveDescription() {
+            const newDescription = document.getElementById('descriptionText').value;
+            if (!newDescription.trim()) {
+                alert('La descrizione non può essere vuota');
+                return;
+            }
+            
+            budgetData[currentDescriptionIndex].descrizione = newDescription;
+            
+            // Aggiorna il testo visualizzato
+            document.getElementById('desc-text-' + currentDescriptionIndex).textContent = newDescription;
+            
+            closeDescriptionModal();
         }
 
         // Initialize

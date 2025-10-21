@@ -338,14 +338,14 @@
             <!-- Phases -->
             <div class="card">
                 <div class="card-title">
-                    <span>Piano Operativo - 5 Fasi</span>
+                    <span>Piano Operativo - 6 Fasi</span>
                     <div class="stats">
                         <div class="stat">
-                            <div class="stat-value" id="totalWeeks">11</div>
+                            <div class="stat-value" id="totalWeeks">15</div>
                             <div class="stat-label">Settimane Totali</div>
                         </div>
                         <div class="stat">
-                            <div class="stat-value">5</div>
+                            <div class="stat-value">6</div>
                             <div class="stat-label">Fasi</div>
                         </div>
                     </div>
@@ -428,6 +428,26 @@
 
     <script>
         const phases = [
+            {
+                id: 0, icon: "🚀", name: "Avvio progetto e preparazione",
+                description: "Attività propedeutiche: presentazione, stakeholder engagement e funding",
+                detailedDescription: "Questa fase preliminare racchiude tutte le attività strategiche e preparatorie necessarie per dare avvio formale al progetto di riqualificazione del Campo Celimontano. Si parte con la presentazione del progetto agli stakeholder chiave, includendo enti pubblici, istituzioni accademiche, partner privati e comunità locale. Parallelamente si avvia il processo di condivisione e consultazione con tutti i soggetti interessati, raccogliendo feedback e integrando suggerimenti per affinare la visione progettuale. Una componente cruciale riguarda la ricerca e l'ottenimento dei fondi necessari, attraverso bandi pubblici, finanziamenti europei, partnership pubblico-private o sponsorizzazioni. Contestualmente viene sviluppata la pianificazione di alto livello e la progettazione preliminare, definendo obiettivi, milestone, risorse necessarie e governance del progetto. Si procede quindi alla redazione del capitolato tecnico dettagliato, che costituirà la base per la selezione dei fornitori e appaltatori. Infine, si conduce il processo di assegnazione degli incarichi attraverso procedure competitive, selezionando i partner operativi più qualificati. La fase si conclude con la riunione di Go/No-Go, dove viene presa la decisione formale di procedere con l'implementazione operativa del progetto.",
+                settimanaInizio: -4, settimanaFine: -1, durataSettimane: 4,
+                owner: "Project Management & Direzione Strategica",
+                dipendenze: "Nessuna (fase iniziale)", color: "#ec4899",
+                tasks: [
+                    { id: 1, name: "Presentazione progetto a stakeholder istituzionali e partner chiave", owner: "Direzione Progetto", duration: 7 },
+                    { id: 2, name: "Workshop di condivisione con comunità locale e associazioni", owner: "Responsabile Stakeholder Engagement", duration: 7 },
+                    { id: 3, name: "Identificazione fonti di finanziamento e preparazione candidature bandi", owner: "Ufficio Fundraising", duration: 14 },
+                    { id: 4, name: "Negoziazione partnership pubblico-private e accordi di sponsorizzazione", owner: "Business Development", duration: 14 },
+                    { id: 5, name: "Pianificazione di alto livello: timeline, budget, risorse, governance", owner: "Project Manager", duration: 10 },
+                    { id: 6, name: "Progettazione preliminare e definizione concept tecnico-funzionale", owner: "Team Tecnico", duration: 14 },
+                    { id: 7, name: "Redazione capitolato tecnico e documentazione di gara", owner: "Ufficio Appalti", duration: 10 },
+                    { id: 8, name: "Pubblicazione bandi e valutazione offerte fornitori", owner: "Commissione di Gara", duration: 14 },
+                    { id: 9, name: "Assegnazione incarichi e stipula contratti", owner: "Direzione Amministrativa", duration: 7 },
+                    { id: 10, name: "Riunione Go/No-Go e decisione formale di avvio operativo", owner: "Comitato Direttivo", duration: 2 }
+                ]
+            },
             {
                 id: 1, icon: "📋", name: "Verifiche preliminari, rilievi e autorizzazioni",
                 description: "Conoscenza approfondita dello stato attuale del Campo Celimontano",
@@ -590,19 +610,24 @@
         let currentDescriptionIndex = null;
 
         function renderGantt() {
-            const totalWeeks = Math.max(...phases.map(p => p.settimanaFine));
-            document.getElementById('totalWeeks').textContent = totalWeeks;
+            const minWeek = Math.min(...phases.map(p => p.settimanaInizio));
+            const maxWeek = Math.max(...phases.map(p => p.settimanaFine));
+            const totalWeeks = maxWeek - minWeek + 1;
+            document.getElementById('totalWeeks').textContent = (maxWeek + 1); // Show total project duration
             
             let html = '<div class="gantt-wrapper"><div class="gantt-grid">';
             html += '<div class="gantt-header"><div class="gantt-cell">Fase</div><div class="gantt-timeline-header">';
-            for (let i = 1; i <= totalWeeks; i++) html += `<div class="gantt-week">S${i}</div>`;
+            for (let i = minWeek; i <= maxWeek; i++) {
+                const weekLabel = i < 0 ? `S${i}` : `S${i}`;
+                html += `<div class="gantt-week">${weekLabel}</div>`;
+            }
             html += '</div></div>';
             
             phases.forEach(p => {
                 html += '<div class="gantt-row"><div class="gantt-label" style="padding:20px 15px;"><span style="font-size:20px;margin-right:10px;">' + p.icon + '</span><span style="font-weight:600;font-size:14px;line-height:1.4;">Fase ' + p.id + ' - ' + p.name + '</span></div>';
                 html += '<div class="gantt-timeline">';
-                for (let i = 1; i <= totalWeeks; i++) html += '<div class="gantt-week-cell"></div>';
-                const left = ((p.settimanaInizio - 1) / totalWeeks) * 100;
+                for (let i = minWeek; i <= maxWeek; i++) html += '<div class="gantt-week-cell"></div>';
+                const left = ((p.settimanaInizio - minWeek) / totalWeeks) * 100;
                 const width = ((p.settimanaFine - p.settimanaInizio + 1) / totalWeeks) * 100;
                 html += '<div class="gantt-bar" style="left:' + left + '%;width:' + width + '%;background:' + p.color + ';">' + p.durataSettimane + 'w</div>';
                 html += '</div></div>';
@@ -611,6 +636,7 @@
             // Add milestones row
             html += '<div style="grid-column: 1 / -1; margin-top: 15px; padding: 15px; background: #f8f9fa; border-radius: 8px;"><strong>🎯 Milestone Principali:</strong><br>';
             html += '<div style="margin-top:10px;display:flex;gap:20px;flex-wrap:wrap;">';
+            html += '<span style="padding:5px 10px;background:#fce7f3;border-radius:4px;font-size:13px;font-weight:600;">🚦 GO (dopo S-1)</span>';
             html += '<span style="padding:5px 10px;background:#dbeafe;border-radius:4px;font-size:13px;">✓ Fine Verifiche (S4)</span>';
             html += '<span style="padding:5px 10px;background:#d1fae5;border-radius:4px;font-size:13px;">✓ Area Sicura (S4)</span>';
             html += '<span style="padding:5px 10px;background:#fef3c7;border-radius:4px;font-size:13px;">✓ Serre Operative (S9)</span>';

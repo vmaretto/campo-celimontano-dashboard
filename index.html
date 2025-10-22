@@ -451,7 +451,7 @@
             {
                 id: 1, icon: "📋", name: "Verifiche preliminari, rilievi e autorizzazioni",
                 description: "Conoscenza approfondita dello stato attuale del Campo Celimontano",
-                detailedDescription: "Il primo passo consiste nella conoscenza approfondita dello stato attuale del Campo Celimontano, sia dal punto di vista fisico che amministrativo. In questa fase si procederà a un rilievo topografico e fotografico completo, comprendente le due serre, i tre manufatti minori, le aree verdi e gli accessi. Parallelamente sarà effettuata un'analisi dei vincoli urbanistici e paesaggistici, con particolare attenzione alle norme di tutela che riguardano il verde pubblico e le aree di pregio storico ambientale del Celio. Un censimento della vegetazione, con particolare riferimento agli alberi di alto fusto e al loro stato fitosanitario, consentirà di individuare le zone da preservare e quelle in cui sarà possibile intervenire con attività di pulizia o riqualificazione. Saranno inoltre verificate le condizioni del suolo, le reti elettriche e idriche esistenti, e saranno avviate le procedure per ottenere le autorizzazioni necessarie agli interventi di sistemazione e installazione delle strutture temporanee previste dal progetto. Questa fase consentirà di definire con precisione le aree operative, i vincoli di intervento e le prime priorità tecniche e paesaggistiche.",
+                detailedDescription: "Il primo passo consiste nella conoscenza approfondita dello stato attuale del Campo Celimontano, sia dal punto di vista fisico che amministrativo. In questa fase si procede a un rilievo topografico e fotografico completo dell'area, comprendente serre, manufatti, aree verdi e accessi, insieme all'analisi dei vincoli urbanistici e paesaggistici, con particolare attenzione alle norme di tutela del verde pubblico e delle aree di pregio storico-ambientale del Celio. Parallelamente vengono condotti il censimento della vegetazione, le verifiche sulle condizioni del suolo e delle reti infrastrutturali, e vengono avviate le procedure autorizzative per gli interventi di sistemazione e installazione delle strutture temporanee. Completata la fase di rilievo e verifica, si passa alla progettazione esecutiva, che traduce gli esiti tecnici e amministrativi in un piano di intervento operativo. La progettazione esecutiva comprende: la definizione dei dettagli costruttivi e impiantistici, la pianificazione delle aree di cantiere, percorsi di accesso e zone operative, il coordinamento con la Sovrintendenza per gli aspetti di tutela, la redazione degli elaborati tecnici, computi metrici e capitolati esecutivi, la validazione finale per l'avvio della fase di cantiere. Questa fase assicura che tutte le successive operazioni di pulizia, riqualificazione e allestimento siano basate su un quadro tecnico completo, coerente e approvato dagli enti competenti.",
                 settimanaInizio: 1, settimanaFine: 4, durataSettimane: 4,
                 owner: "Team Tecnico & Amministrativo",
                 dipendenze: "Nessuna (avvio immediato)", color: "#3b82f6",
@@ -462,7 +462,8 @@
                     { id: 4, name: "Analisi delle condizioni del suolo e dei sistemi di drenaggio", owner: "Geologo", duration: 10 },
                     { id: 5, name: "Verifica della rete elettrica, idrica e delle infrastrutture esistenti", owner: "Impiantista", duration: 7 },
                     { id: 6, name: "Richiesta e ottenimento dei permessi e delle autorizzazioni per lavori temporanei e allestimenti modulari", owner: "Ufficio Amministrativo", duration: 28 },
-                    { id: 7, name: "Definizione del protocollo di sicurezza e accesso all'area", owner: "Responsabile Sicurezza", duration: 7 }
+                    { id: 7, name: "Definizione del protocollo di sicurezza e accesso all'area", owner: "Responsabile Sicurezza", duration: 7 },
+                    { id: 8, name: "Redazione della progettazione esecutiva e documentazione tecnica finale", owner: "Team Progettazione", duration: 21 }
                 ]
             },
             {
@@ -536,15 +537,16 @@
                 fase: "Fase 1", 
                 faseId: 1,
                 faseNome: "Verifiche preliminari, rilievi e autorizzazioni",
-                descrizione: "Questa prima fase si concentra sulla conoscenza approfondita del Campo Celimontano attraverso rilievi topografici e fotografici dettagliati che mappano serre, manufatti e vegetazione. Parallelamente vengono condotte verifiche sui vincoli urbanistici e paesaggistici in coordinamento con Sovrintendenza e Demanio, mentre il censimento della vegetazione identifica le alberature da preservare. L'analisi del suolo e dei sistemi di drenaggio, insieme alla verifica delle reti esistenti, permettono di definire gli interventi necessari. Infine, vengono avviate le pratiche autorizzative e definiti i protocolli di sicurezza per l'accesso all'area.",
+                descrizione: "Il primo passo consiste nella conoscenza approfondita dello stato attuale del Campo Celimontano, sia dal punto di vista fisico che amministrativo. In questa fase si procede a un rilievo topografico e fotografico completo dell'area, comprendente serre, manufatti, aree verdi e accessi, insieme all'analisi dei vincoli urbanistici e paesaggistici, con particolare attenzione alle norme di tutela del verde pubblico e delle aree di pregio storico-ambientale del Celio. Parallelamente vengono condotti il censimento della vegetazione, le verifiche sulle condizioni del suolo e delle reti infrastrutturali, e vengono avviate le procedure autorizzative per gli interventi di sistemazione e installazione delle strutture temporanee. Completata la fase di rilievo e verifica, si passa alla progettazione esecutiva, che traduce gli esiti tecnici e amministrativi in un piano di intervento operativo. La progettazione esecutiva comprende: la definizione dei dettagli costruttivi e impiantistici, la pianificazione delle aree di cantiere, percorsi di accesso e zone operative, il coordinamento con la Sovrintendenza per gli aspetti di tutela, la redazione degli elaborati tecnici, computi metrici e capitolati esecutivi, la validazione finale per l'avvio della fase di cantiere. Questa fase assicura che tutte le successive operazioni di pulizia, riqualificazione e allestimento siano basate su un quadro tecnico completo, coerente e approvato dagli enti competenti.",
                 items: [
                     { desc: "Rilievo topografico e fotografico dettagliato dell'area", min: 5000, max: 7000 },
-                    { desc: "Verifica vincoli urbanistici e paesaggistici con enti", min: 4000, max: 5600 },
-                    { desc: "Censimento vegetazione e analisi fitosanitaria", min: 3500, max: 4900 },
-                    { desc: "Analisi condizioni suolo e sistemi drenaggio", min: 2800, max: 3900 },
+                    { desc: "Verifica vincoli urbanistici e paesaggistici con enti", min: 4000, max: 6000 },
+                    { desc: "Censimento vegetazione e analisi fitosanitaria", min: 3500, max: 5000 },
+                    { desc: "Analisi condizioni suolo e sistemi drenaggio", min: 3000, max: 4000 },
                     { desc: "Verifica reti elettrica, idrica e infrastrutture", min: 2500, max: 3500 },
                     { desc: "Pratiche autorizzative e permessi", min: 5000, max: 7000 },
-                    { desc: "Protocollo sicurezza e accesso area", min: 2000, max: 2800 }
+                    { desc: "Protocollo sicurezza e accesso area", min: 2000, max: 3000 },
+                    { desc: "Redazione della progettazione esecutiva e documentazione tecnica finale", min: 15000, max: 20000 }
                 ]
             },
             {
@@ -553,12 +555,12 @@
                 faseNome: "Pulizia e messa in sicurezza",
                 descrizione: "Una volta completate le verifiche preliminari, si avvia la pulizia completa dell'area con rimozione di materiali abbandonati e rifiuti vegetali che si sono accumulati nel tempo. La potatura selettiva delle alberature pericolanti viene eseguita mantenendo l'integrità ecologica del sito, mentre il consolidamento dei pendii e la verifica dei drenaggi garantiscono la stabilità dell'area. Vengono quindi realizzate recinzioni provvisorie per delimitare le zone operative e ripristinati i percorsi di accesso, completando con l'installazione della segnaletica di cantiere necessaria per garantire un ambiente di lavoro sicuro.",
                 items: [
-                    { desc: "Pulizia generale e rimozione materiali abbandonati", min: 7000, max: 9800 },
-                    { desc: "Potatura selettiva e messa in sicurezza alberature", min: 6000, max: 8400 },
-                    { desc: "Consolidamento pendii e verifica drenaggio", min: 4500, max: 6300 },
-                    { desc: "Recinzioni provvisorie per delimitazione zone", min: 3200, max: 4500 },
-                    { desc: "Ripristino percorsi di accesso e aree lavoro", min: 4000, max: 5600 },
-                    { desc: "Segnaletica temporanea e punti sicurezza", min: 2000, max: 2800 }
+                    { desc: "Pulizia generale e rimozione materiali abbandonati", min: 7000, max: 10000 },
+                    { desc: "Potatura selettiva e messa in sicurezza alberature", min: 6000, max: 8500 },
+                    { desc: "Consolidamento pendii e verifica drenaggio", min: 4500, max: 6500 },
+                    { desc: "Recinzioni provvisorie per delimitazione zone", min: 3000, max: 4500 },
+                    { desc: "Ripristino percorsi di accesso e aree lavoro", min: 4000, max: 6000 },
+                    { desc: "Segnaletica temporanea e punti sicurezza", min: 2000, max: 3000 }
                 ]
             },
             {
@@ -567,10 +569,10 @@
                 faseNome: "Riqualificazione strutture esistenti",
                 descrizione: "Il cuore del progetto riguarda il recupero delle strutture esistenti, a partire dalle due serre che rappresentano elementi chiave per le future attività. Dopo le ispezioni strutturali su telai, vetri e coperture, si procede con il ripristino delle parti danneggiate sostituendo i materiali deteriorati. La pulizia interna e il trattamento anti-umidità preparano gli ambienti per la revisione completa degli impianti elettrici, idrici e di illuminazione. I manufatti minori vengono riqualificati con interventi su intonaci, pavimenti e serramenti, mentre vengono predisposti sistemi di ventilazione e illuminazione naturale per garantire comfort e sostenibilità energetica.",
                 items: [
-                    { desc: "Ispezione strutturale serre (telaio, vetri, coperture)", min: 6500, max: 9100 },
-                    { desc: "Ripristino parti danneggiate e sostituzione materiali", min: 32000, max: 44800 },
+                    { desc: "Ispezione strutturale serre (telaio, vetri, coperture)", min: 6500, max: 9000 },
+                    { desc: "Ripristino parti danneggiate e sostituzione materiali", min: 32000, max: 45000 },
                     { desc: "Pulizia interna e trattamento anti-umidità", min: 5000, max: 7000 },
-                    { desc: "Revisione impianti elettrico, idrico, illuminazione", min: 18000, max: 25200 },
+                    { desc: "Revisione impianti elettrico, idrico, illuminazione", min: 18000, max: 25000 },
                     { desc: "Riqualificazione manufatto (intonaco, pavimenti, serramenti)", min: 20000, max: 28000 },
                     { desc: "Sistemi ventilazione e illuminazione naturale", min: 7500, max: 10500 }
                 ]
@@ -583,11 +585,11 @@
                 items: [
                     { desc: "Taglio selettivo e pulizia sottobosco aree pubbliche", min: 7500, max: 10500 },
                     { desc: "Conservazione e protezione alberature principali", min: 5000, max: 7000 },
-                    { desc: "Percorsi pedonali naturali (stabilizzato o legno)", min: 11000, max: 15400 },
-                    { desc: "Illuminazione soffusa a basso impatto", min: 5800, max: 8100 },
-                    { desc: "Radure per eventi, lezioni all'aperto e laboratori", min: 6500, max: 9100 },
-                    { desc: "Valorizzazione Fontana delle Ninfee", min: 5500, max: 7700 },
-                    { desc: "Piantumazioni specie autoctone e mellifere", min: 4200, max: 5900 }
+                    { desc: "Percorsi pedonali naturali (stabilizzato o legno)", min: 11000, max: 15500 },
+                    { desc: "Illuminazione soffusa a basso impatto", min: 6000, max: 8000 },
+                    { desc: "Radure per eventi, lezioni all'aperto e laboratori", min: 6500, max: 9000 },
+                    { desc: "Valorizzazione Fontana delle Ninfee", min: 5500, max: 8000 },
+                    { desc: "Piantumazioni specie autoctone e mellifere", min: 4000, max: 6000 }
                 ]
             },
             {
@@ -597,9 +599,9 @@
                 descrizione: "L'ultima fase rende operativo il campo attraverso l'installazione delle infrastrutture tecnologiche di base. Vengono posate linee elettriche e idriche di servizio, prevedendo anche soluzioni temporanee flessibili per eventi e allestimenti mobili. La rete wi-fi e dati viene implementata per supportare dispositivi digitali, sensori del living lab e sistemi di monitoraggio. Punti luce e prese elettriche vengono distribuiti strategicamente per eventi e laboratori, mentre passerelle accessibili e pavimentazioni leggere migliorano la fruibilità. Infine vengono definite le aree destinate ai container modulari e alle strutture mobili, con predisposizione di superfici piane e accessi tecnici.",
                 items: [
                     { desc: "Linee elettriche e idriche di servizio (anche temporanee)", min: 15000, max: 21000 },
-                    { desc: "Rete wi-fi e dati per dispositivi digitali e sensori", min: 9000, max: 12600 },
+                    { desc: "Rete wi-fi e dati per dispositivi digitali e sensori", min: 9000, max: 13000 },
                     { desc: "Punti luce e prese per eventi e laboratori", min: 7500, max: 10500 },
-                    { desc: "Passerelle accessibili e pavimentazioni leggere", min: 8500, max: 11900 },
+                    { desc: "Passerelle accessibili e pavimentazioni leggere", min: 8500, max: 12000 },
                     { desc: "Aree per container modulari e strutture mobili", min: 5000, max: 7000 }
                 ]
             }

@@ -538,6 +538,8 @@
                 faseId: 1,
                 faseNome: "Analisi tecnica, Progettazione esecutiva e Autorizzazioni",
                 descrizione: "Il primo passo consiste nella conoscenza approfondita dello stato attuale del Campo Celimontano, sia dal punto di vista fisico che amministrativo. In questa fase si procede a un rilievo topografico e fotografico completo dell'area, comprendente serre, manufatti, aree verdi e accessi, insieme all'analisi dei vincoli urbanistici e paesaggistici, con particolare attenzione alle norme di tutela del verde pubblico e delle aree di pregio storico-ambientale del Celio. Parallelamente vengono condotti il censimento della vegetazione, le verifiche sulle condizioni del suolo e delle reti infrastrutturali, e vengono avviate le procedure autorizzative per gli interventi di sistemazione e installazione delle strutture temporanee. Completata la fase di rilievo e verifica, si passa alla progettazione esecutiva, che traduce gli esiti tecnici e amministrativi in un piano di intervento operativo. La progettazione esecutiva comprende: la definizione dei dettagli costruttivi e impiantistici, la pianificazione delle aree di cantiere, percorsi di accesso e zone operative, il coordinamento con la Sovrintendenza per gli aspetti di tutela, la redazione degli elaborati tecnici, computi metrici e capitolati esecutivi, la validazione finale per l'avvio della fase di cantiere. Questa fase assicura che tutte le successive operazioni di pulizia, riqualificazione e allestimento siano basate su un quadro tecnico completo, coerente e approvato dagli enti competenti.",
+                roundedMin: 40000,
+                roundedMax: 55000,
                 items: [
                     { desc: "Rilievo topografico e fotografico dettagliato dell'area", min: 5000, max: 7000 },
                     { desc: "Verifica vincoli urbanistici e paesaggistici con enti", min: 4000, max: 6000 },
@@ -554,6 +556,8 @@
                 faseId: 2,
                 faseNome: "Pulizia e messa in sicurezza",
                 descrizione: "Una volta completate le verifiche preliminari, si avvia la pulizia completa dell'area con rimozione di materiali abbandonati e rifiuti vegetali che si sono accumulati nel tempo. La potatura selettiva delle alberature pericolanti viene eseguita mantenendo l'integrità ecologica del sito, mentre il consolidamento dei pendii e la verifica dei drenaggi garantiscono la stabilità dell'area. Vengono quindi realizzate recinzioni provvisorie per delimitare le zone operative e ripristinati i percorsi di accesso, completando con l'installazione della segnaletica di cantiere necessaria per garantire un ambiente di lavoro sicuro.",
+                roundedMin: 27000,
+                roundedMax: 38000,
                 items: [
                     { desc: "Pulizia generale e rimozione materiali abbandonati", min: 7000, max: 10000 },
                     { desc: "Potatura selettiva e messa in sicurezza alberature", min: 6000, max: 8500 },
@@ -568,6 +572,8 @@
                 faseId: 3,
                 faseNome: "Riqualificazione strutture esistenti",
                 descrizione: "Il cuore del progetto riguarda il recupero delle strutture esistenti, a partire dalle due serre che rappresentano elementi chiave per le future attività. Dopo le ispezioni strutturali su telai, vetri e coperture, si procede con il ripristino delle parti danneggiate sostituendo i materiali deteriorati. La pulizia interna e il trattamento anti-umidità preparano gli ambienti per la revisione completa degli impianti elettrici, idrici e di illuminazione. I manufatti minori vengono riqualificati con interventi su intonaci, pavimenti e serramenti, mentre vengono predisposti sistemi di ventilazione e illuminazione naturale per garantire comfort e sostenibilità energetica.",
+                roundedMin: 89000,
+                roundedMax: 125000,
                 items: [
                     { desc: "Ispezione strutturale serre (telaio, vetri, coperture)", min: 6500, max: 9000 },
                     { desc: "Ripristino parti danneggiate e sostituzione materiali", min: 32000, max: 45000 },
@@ -582,6 +588,8 @@
                 faseId: 4,
                 faseNome: "Sistemazione del verde e del suolo",
                 descrizione: "La valorizzazione del paesaggio naturale avviene preservando il carattere spontaneo dell'area ma migliorandone la fruibilità. Il taglio selettivo del sottobosco nelle zone pubbliche viene bilanciato dalla conservazione e protezione delle alberature principali che caratterizzano il sito. Vengono realizzati percorsi pedonali naturali in stabilizzato o legno che collegano le diverse aree, dotati di illuminazione soffusa a basso impatto. Piccole radure vengono create per ospitare eventi, lezioni all'aperto e laboratori, mentre particolare attenzione viene dedicata alla valorizzazione della Fontana delle Ninfee. Infine, le piantumazioni di specie autoctone e mellifere arricchiscono la biodiversità e migliorano il microclima.",
+                roundedMin: 46000,
+                roundedMax: 64000,
                 items: [
                     { desc: "Taglio selettivo e pulizia sottobosco aree pubbliche", min: 7500, max: 10500 },
                     { desc: "Conservazione e protezione alberature principali", min: 5000, max: 7000 },
@@ -597,6 +605,8 @@
                 faseId: 5,
                 faseNome: "Predisposizione infrastrutturale",
                 descrizione: "L'ultima fase rende operativo il campo attraverso l'installazione delle infrastrutture tecnologiche di base. Vengono posate linee elettriche e idriche di servizio, prevedendo anche soluzioni temporanee flessibili per eventi e allestimenti mobili. La rete wi-fi e dati viene implementata per supportare dispositivi digitali, sensori del living lab e sistemi di monitoraggio. Punti luce e prese elettriche vengono distribuiti strategicamente per eventi e laboratori, mentre passerelle accessibili e pavimentazioni leggere migliorano la fruibilità. Infine vengono definite le aree destinate ai container modulari e alle strutture mobili, con predisposizione di superfici piane e accessi tecnici.",
+                roundedMin: 45000,
+                roundedMax: 63000,
                 items: [
                     { desc: "Linee elettriche e idriche di servizio (anche temporanee)", min: 15000, max: 21000 },
                     { desc: "Rete wi-fi e dati per dispositivi digitali e sensori", min: 9000, max: 13000 },
@@ -738,6 +748,24 @@
                 html += '<div class="budget-description-text" id="desc-text-' + idx + '">' + b.descrizione + '</div>';
                 html += '</div>';
                 
+                // NUOVO: Totali fase con pulsante ricalcola
+                html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;">';
+                html += '<div style="background:#e0f2fe;padding:15px;border-radius:8px;border:2px solid #0284c7;">';
+                html += '<div style="font-size:12px;font-weight:600;color:#0c4a6e;margin-bottom:8px;">TOTALE CALCOLATO (MIN-MAX)</div>';
+                html += '<div style="font-size:20px;font-weight:700;color:#0369a1;" id="phase-calc-total-' + idx + '">€ ' + totMin.toLocaleString('it-IT') + ' - € ' + totMax.toLocaleString('it-IT') + '</div>';
+                html += '<button class="btn btn-primary btn-small" style="margin-top:10px;" onclick="recalculatePhaseTotal(' + idx + ')">🔄 Ricalcola Totale</button>';
+                html += '</div>';
+                html += '<div style="background:#fef3c7;padding:15px;border-radius:8px;border:2px solid #f59e0b;">';
+                html += '<div style="font-size:12px;font-weight:600;color:#92400e;margin-bottom:8px;">TOTALE APPROSSIMATO FASE (modificabile)</div>';
+                html += '<div style="display:flex;gap:10px;align-items:center;">';
+                html += '<input type="number" class="budget-input" style="font-size:16px;font-weight:700;" id="phase-round-min-' + idx + '" value="' + (b.roundedMin || totMin) + '" onchange="updateRoundedTotal(' + idx + ',\'min\',this.value)">';
+                html += '<span style="font-weight:700;">-</span>';
+                html += '<input type="number" class="budget-input" style="font-size:16px;font-weight:700;" id="phase-round-max-' + idx + '" value="' + (b.roundedMax || totMax) + '" onchange="updateRoundedTotal(' + idx + ',\'max\',this.value)">';
+                html += '</div>';
+                html += '<div style="font-size:11px;color:#92400e;margin-top:8px;">💡 Usa multipli di 5k o 10k</div>';
+                html += '</div>';
+                html += '</div>';
+                
                 html += '<div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:10px;padding:10px;font-weight:600;font-size:12px;color:#666;">';
                 html += '<div>VOCE DI SPESA (allineata ai task)</div><div>MIN (€)</div><div>MAX (€)</div></div>';
                 
@@ -759,12 +787,52 @@
 
         function updateBudgetTotals() {
             let min = 0, max = 0;
-            budgetData.forEach(b => b.items.forEach(i => { min += i.min; max += i.max; }));
+            let roundedMin = 0, roundedMax = 0;
+            budgetData.forEach(b => {
+                b.items.forEach(i => { min += i.min; max += i.max; });
+                roundedMin += (b.roundedMin || 0);
+                roundedMax += (b.roundedMax || 0);
+            });
             document.getElementById('budgetMin').textContent = '€ ' + min.toLocaleString('it-IT');
             document.getElementById('budgetMax').textContent = '€ ' + max.toLocaleString('it-IT');
-            // Contingency 5% arrotondato
-            const contingency = Math.round(max * 1.05 / 100) * 100;
+            // Contingency 5% arrotondato - usa il totale arrotondato se disponibile
+            const maxForContingency = roundedMax > 0 ? roundedMax : max;
+            const contingency = Math.round(maxForContingency * 1.05 / 100) * 100;
             document.getElementById('budgetContingency').textContent = '€ ' + contingency.toLocaleString('it-IT');
+        }
+
+        function recalculatePhaseTotal(idx) {
+            const b = budgetData[idx];
+            const totMin = b.items.reduce((s, i) => s + i.min, 0);
+            const totMax = b.items.reduce((s, i) => s + i.max, 0);
+            
+            // Aggiorna il display del totale calcolato
+            document.getElementById('phase-calc-total-' + idx).textContent = 
+                '€ ' + totMin.toLocaleString('it-IT') + ' - € ' + totMax.toLocaleString('it-IT');
+            
+            // Aggiorna anche l'header della fase
+            const headerTotal = document.querySelector('#bdetails-' + b.faseId).previousElementSibling.querySelector('.budget-phase-total');
+            if (headerTotal) {
+                const currentText = headerTotal.textContent;
+                const newText = '€ ' + totMin.toLocaleString('it-IT') + ' - € ' + totMax.toLocaleString('it-IT') + ' ' + 
+                               currentText.substring(currentText.lastIndexOf('<span'));
+                headerTotal.innerHTML = '€ ' + totMin.toLocaleString('it-IT') + ' - € ' + totMax.toLocaleString('it-IT') + 
+                                       ' <span id="btoggle-' + b.faseId + '">' + 
+                                       (document.getElementById('bdetails-' + b.faseId).classList.contains('visible') ? '▲' : '▼') + '</span>';
+            }
+            
+            updateBudgetTotals();
+            alert('✅ Totale ricalcolato!\n\nNuovo totale calcolato: €' + totMin.toLocaleString('it-IT') + ' - €' + totMax.toLocaleString('it-IT'));
+        }
+
+        function updateRoundedTotal(idx, field, val) {
+            const numVal = parseInt(val) || 0;
+            if (field === 'min') {
+                budgetData[idx].roundedMin = numVal;
+            } else {
+                budgetData[idx].roundedMax = numVal;
+            }
+            updateBudgetTotals();
         }
 
         function switchTab(tab) {
